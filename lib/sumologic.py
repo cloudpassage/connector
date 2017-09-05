@@ -4,6 +4,7 @@
 import lib.loadyaml as loadyaml
 import requests
 import sys
+import json
 
 
 class Sumologic(object):
@@ -12,6 +13,7 @@ class Sumologic(object):
         self.max_retry = 3
 
     def https_forwarder(self, data):
+        data = json.dumps(data, ensure_ascii=False)
         reply = requests.post(self.configs['sumologic_https_url'], data=data)
         reply_status_code = reply.status_code
         num_attempts = 1

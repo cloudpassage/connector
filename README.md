@@ -77,7 +77,7 @@ optional arguments:
   --leefsyslog          Write events in LEEF (QRadar) format to syslog server
   --cefsyslog           Write events in CEF (ArcSight) format to syslog server
   --kvsyslog            Write events as key/value pairs to local syslog daemon
-  --sumologic           Send events (JSON) format to Sumologic
+  --sumologic           Send events (JSON) format to Sumologic. Must specify sumologic_https_url in configs/portal.yml
 ```
 ### Halo Event Connector on Linux
 

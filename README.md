@@ -7,6 +7,9 @@ Cloudpassage SDK:
 
 Install from pip with `pip install cloudpassage`. If you want to make modifications to the SDK you can install it in editable mode by downloading the source from this github repo, navigating to the top directory within the archive and running pip install -e . (note the . at the end). Or you can visit https://github.com/cloudpassage/cloudpassage-halo-python-sdk to clone it directly from our github.
 
+Note: (If you run into SSL issues. Try the following command) 
+`pip install pyopenssl`
+
 ### Intro - Quick Start
 In this repo we have included the pdf documentation for using these scripts to pull Halo event alerts into either Sumo Logic or Splunk - however, you will just as easily be able to integrate Halo events into other popular SIEM tools, such as ArcSight, or with your Syslog infrastructure.
 

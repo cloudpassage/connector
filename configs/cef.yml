@@ -23,6 +23,10 @@ eventIdMap:
     api_login_success: 908
     authentication_settings_modified: 907
     authorized_ips_modified: 905
+    container_event_add: 943
+    csp_account_provisioned: 938
+    csp_account_details_changed: 939
+    csp_account_deleted: 940
     cve_exception_created: 604
     cve_exception_deleted: 606
     cve_exception_expired: 605
@@ -88,10 +92,13 @@ eventIdMap:
     image_collector_deactivated: 923
     image_collector_reactivated: 924
     image_collector_missing: 925
+    image_collector_compromised: 937
+    image_collector_registration_key_regenerated: 945
     image_collector_settings_modified: 926
     image_status_changed: 927
     image_security_status_changed: 928
     image_issue_resolved: 929
+    image_inspection_status_changed: 944
     ip_address_changed: 718
     issue_resolved: 728
     key_created: 812
@@ -133,6 +140,7 @@ eventIdMap:
     registry_add: 934
     registry_deleted: 935
     registry_changed: 936
+    registry_status_changed: 941
     sam_scan_requested: 504
     sca_policy_assigned: 505
     sca_policy_created: 506

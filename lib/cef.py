@@ -42,9 +42,12 @@ class Cef(object):
                     mapping[value] = cef_date
                 else:
                     mapping[value] = event[key]
+                    if value in ['cs2', 'cs3', 'cs4', 'cs5']:
+                        label = "%sLabel" % value
+                        mapping[label] = self.configs['cefCsLabels'][label]
                 del event[key]
         if event:
-            mapping["cs1Label"] = "extras"
+            mapping["cs1Label"] = self.configs['cefCsLabels']['cs1Label']
             mapping["cs1"] = event
         return mapping
 

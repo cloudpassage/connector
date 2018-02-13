@@ -10,6 +10,20 @@ cefFieldMapping:
     created_at: rt
     actor_ip_address: src
     actor_username: duser
+    actor_key_id: duid
+    actor_key_label: dpriv
+    id: externalid
+    server_platform: cs2
+    server_id: cs3
+    server_group_name: cs4
+    policy_name: cs5
+    server_reported_fqdn: dvchost
+cefCsLabels:
+    cs1Label: extras
+    cs2Label: server_platform
+    cs3Label: server_id
+    cs4Label: server_group_name
+    cs5Label: policy_name
 eventIdMap:
     account_created: 910
     account_deleted: 911

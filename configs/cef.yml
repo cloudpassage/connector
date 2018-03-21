@@ -2,10 +2,8 @@ cefVersion: 0
 cefVendor: CloudPassage
 cefProduct: CPHalo
 cefProductVersion: 1.0
-cefHaloGrid: 50.57.180.190
 cefFieldMapping:
-    server_ip_address: dst
-    server_hostname: dhost
+    server_primary_ip_address: dst
     message: msg
     created_at: rt
     actor_ip_address: src
@@ -16,14 +14,14 @@ cefFieldMapping:
     server_platform: cs2
     server_id: cs3
     server_group_name: cs4
-    policy_name: cs5
+    policy_name: cs1
     server_reported_fqdn: dvchost
 cefCsLabels:
-    cs1Label: extras
+    cs1Label: policy_name
     cs2Label: server_platform
     cs3Label: server_id
     cs4Label: server_group_name
-    cs5Label: policy_name
+    cs5Label: extras
 eventIdMap:
     account_created: 910
     account_deleted: 911

@@ -42,13 +42,13 @@ class Cef(object):
                     mapping[value] = cef_date
                 else:
                     mapping[value] = event[key]
-                    if value in ['cs2', 'cs3', 'cs4', 'cs5']:
+                    if value in ['cs1', 'cs2', 'cs3', 'cs4']:
                         label = "%sLabel" % value
                         mapping[label] = self.configs['cefCsLabels'][label]
                 del event[key]
         if event:
-            mapping["cs1Label"] = self.configs['cefCsLabels']['cs1Label']
-            mapping["cs1"] = event
+            mapping["cs5Label"] = self.configs['cefCsLabels']['cs5Label']
+            mapping["cs5"] = event
         return mapping
 
     def escape_specials(self, cef_str):

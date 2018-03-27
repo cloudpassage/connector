@@ -146,6 +146,7 @@ eventIdMap:
     password_recovery_request_failed: 419
     password_recovery_requested: 400
     password_recovery_success: 420
+    portal_audit_policy_modified: 431
     repository_add: 931
     repository_delete: 932
     repository_modified: 933

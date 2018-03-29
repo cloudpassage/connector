@@ -26,7 +26,13 @@ eventIdMap:
     account_created: 910
     account_deleted: 911
     activation_link_failed: 906
+    agent_upgrade_failed: 515
+    agent_upgrade_succeeded: 516
+    agent_upgrade_task_cancelled: 517
+    agent_upgrade_task_scheduled: 518
+    agent_upgrade_task_completed: 519
     agent_key_regenerated: 900
+    agent_restarted: 520
     api_client_created: 901
     api_client_deleted: 902
     api_client_secret_viewed: 904
@@ -39,6 +45,8 @@ eventIdMap:
     csp_account_provisioned: 938
     csp_account_details_changed: 939
     csp_account_deleted: 940
+    csp_account_deactivated: 523
+    csp_account_reactivated: 524
     cve_exception_created: 604
     cve_exception_deleted: 606
     cve_exception_expired: 605
@@ -71,6 +79,7 @@ eventIdMap:
     fim_scan_failed: 104
     fim_scan_modified: 100
     fim_scan_requested: 103
+    fim_scan_terminated: 514
     fim_signature_changed: 127
     fim_target_integrity_changed: 130
     firewall_policy_assigned: 201
@@ -163,6 +172,8 @@ eventIdMap:
     sca_policy_modified: 510
     sca_policy_unassigned: 512
     sca_rule_failed: 503
+    sca_scan_terminated: 513
+    scan_time_limit_modified: 521
     server_account_created: 714
     server_account_deleted: 705
     server_deactivated: 707
@@ -182,6 +193,7 @@ eventIdMap:
     session_timeout_modified: 426
     sms_phone_number_configured: 429
     sms_phone_number_verified: 424
+    svm_scan_terminated: 522
     totp_configured: 919
     vulnerable_software_package_found: 603
     vulnerable_software_package_found_on_image: 930

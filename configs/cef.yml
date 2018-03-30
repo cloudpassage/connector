@@ -4,6 +4,7 @@ cefProduct: CPHalo
 cefProductVersion: 1.0
 cefFieldMapping:
     server_primary_ip_address: dst
+    server_ip_address: destinationTranslatedAddress
     message: msg
     created_at: rt
     actor_ip_address: src

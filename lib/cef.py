@@ -51,12 +51,6 @@ class Cef(object):
             mapping["cs5"] = event
         return mapping
 
-    def escape_specials(self, cef_str):
-        formatted = cef_str.replace("\\","\\\\")
-        formatted = cef_str.replace("=","\\=")
-
-        return formatted
-
     def format_cef(self, batched):
         """format cef"""
         aggregated_cef = []
@@ -65,6 +59,6 @@ class Cef(object):
             constants_map = self.cef_constants(event)
             schema = self.build_cef_mapping(event)
             for key, value in schema.items():
-                cef_str += "%s=%s " % (key, self.escape_specials(str(value)))
+                cef_str += "%s=%s " % (key, value)
             aggregated_cef.append("%s%s" % (constants_map, cef_str))
         return aggregated_cef

@@ -15,6 +15,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+
 class Utility(object):
     """Utility class"""
     def __init__(self, options=None):
@@ -47,13 +48,17 @@ class Utility(object):
     def output_events(self, batched):
         """output events"""
         if self.options["ceffile"] is not None:
-            self.write_output(self.options["ceffile"], self.cef.format_cef(batched))
+            self.write_output(self.options["ceffile"],
+                              self.cef.format_cef(batched))
         if self.options["jsonfile"] is not None:
-            self.write_output(self.options["jsonfile"], jsonkv.format_json(batched))
+            self.write_output(self.options["jsonfile"],
+                              jsonkv.format_json(batched))
         elif self.options["kvfile"] is not None:
-            self.write_output(self.options["kvfile"], jsonkv.format_kv(batched))
+            self.write_output(self.options["kvfile"],
+                              jsonkv.format_kv(batched))
         elif self.options['leeffile'] is not None:
-            self.write_output(self.options["leeffile"], self.leef.format_leef(batched))
+            self.write_output(self.options["leeffile"],
+                              self.leef.format_leef(batched))
         elif self.options["cef"]:
             for formatted_event in self.cef.format_cef(batched):
                 print formatted_event
@@ -108,7 +113,7 @@ class Utility(object):
             validate.starting(self.options["starting"])
             return self.options["starting"]
         elif self.options["starting"] is None and self.options["configdir"]:
-            return self.parse_configdir()
+            return self.parse_configdir_file()[0]["end_date"]
         else:
             try:
                 return self.parse_configdir_file()[0]["end_date"]
@@ -118,7 +123,8 @@ class Utility(object):
     def parse_configdir(self):
         """determine config directory"""
         if self.options["configdir"] is None:
-            return os.path.join(os.path.dirname(__file__), os.pardir, 'configs')
+            return os.path.join(os.path.dirname(__file__),
+                                os.pardir, 'configs')
         return self.options["configdir"]
 
     def parse_configdir_file(self):
@@ -133,7 +139,7 @@ class Utility(object):
                         validate.starting(end_date)
                         key_date.append({"key_id": key, "end_date": end_date})
         else:
-            raise ValueError("Please use --starting to specify a starting date")
+            raise ValueError("Please use --starting to specify starting date")
         return key_date
 
     def updated_hash(self):

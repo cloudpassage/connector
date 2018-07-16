@@ -7,7 +7,7 @@ Cloudpassage SDK:
 
 Install from pip with `pip install cloudpassage`. If you want to make modifications to the SDK you can install it in editable mode by downloading the source from this github repo, navigating to the top directory within the archive and running pip install -e . (note the . at the end). Or you can visit https://github.com/cloudpassage/cloudpassage-halo-python-sdk to clone it directly from our github.
 
-Note: (If you run into SSL issues. Try the following command) 
+Note: (If you run into SSL issues. Try the following command)
 `pip install pyopenssl`
 
 ### Intro - Quick Start
@@ -149,6 +149,27 @@ python halo_events.py --auth=haloEvents.py --starting=YYYY-MM-DD
   windows_syslog_port:
 
 
+#### Testing
+Requirements:
+  * Docker engine
+  * A Halo account with events generated in the last 24 hours
+Testing:
+  * Clone this repository
+  * Navigate to the root directory of this repository
+  * Set the following environment variables:
+    * HALO_API_KEY
+    * HALO_API_SECRET_KEY
+  * Run the following command:
+
+  ```
+  docker build \
+      --build-arg HALO_API_KEY=$HALO_API_KEY \
+      --build-arg HALO_API_SECRET_KEY=$HALO_API_SECRET_KEY \
+      .
+  ```
+
+All testing happens in the first stage of the container build.
+
 
 #### License
 
@@ -180,4 +201,3 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #CPTAGS:community-supported integration archive
 #TBICON:images/python_icon.png
 -->
-

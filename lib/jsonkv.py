@@ -10,6 +10,7 @@ def format_json(batched):
         aggregated_events.append("\n")
     return aggregated_events
 
+
 def format_kv(batched):
     """Format raw data into key-value format"""
     aggregated_kv = []

@@ -42,6 +42,7 @@ eventIdMap:
     api_login_success: 908
     authentication_settings_modified: 907
     authorized_ips_modified: 905
+    cloud_asset_configuration_rule_failed: 946
     container_event_add: 943
     csp_account_provisioned: 938
     csp_account_details_changed: 939

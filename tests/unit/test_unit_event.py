@@ -1,10 +1,9 @@
-import cloudpassage
 import sys
 import os
 import yaml
 import datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../', 'lib'))
-from event import Event
+from event import Event  # NOQA
 
 config_file_name = "portal.yml"
 tests_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
@@ -12,6 +11,8 @@ config_file = os.path.join(tests_dir, "configs/", config_file_name)
 config = yaml.load(file(config_file, 'r'))
 key_id = config['key_id']
 secret_key = config['secret_key']
+# key_id = os.getenv("HALO_API_KEY")
+# secret_key = os.getenv("HALO_API_SECRET_KEY")
 
 date_today = datetime.date.today().isoformat()
 
@@ -22,13 +23,14 @@ class TestUnitEvent:
             '--auth': config_file,
             '--starting': date_today
         }
-
+        print options
         event = Event(key_id, secret_key, options)
         return event
 
     def test_event_get_is_not_empty(self):
         event = self.create_event_obj()
         resp = event.get(1, date_today, 1)
+        print resp
         assert resp['events']
 
     def test_latest_event_is_not_empty(self):

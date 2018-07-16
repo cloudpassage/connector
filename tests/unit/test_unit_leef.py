@@ -1,4 +1,4 @@
-import cloudpassage
+import pprint
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../', 'lib'))
@@ -54,6 +54,12 @@ class TestUnitLeef:
             'isLoginEvent': False,
             'cat': 'server_events'
         }
+        expected = {'cat': 'server_events',
+                    'isLoginEvent': False,
+                    'isLogoutEvent': False,
+                    'leefDateFormat': u"yyyy-MM-dd'T'HH:mm:ss.SSS",
+                    'sev': 9}
+        pprint.pprint(mapping)
         assert expected == mapping
 
     def test_build_leef_mapping(self):

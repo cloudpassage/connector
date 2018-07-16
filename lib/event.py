@@ -59,8 +59,6 @@ class Event(object):
                                                            page,
                                                            date)
         result = api.get(url)
-        print(result)
-        print(url)
         return result
 
     def latest_event(self, per_page, date, page):

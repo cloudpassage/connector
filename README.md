@@ -1,4 +1,4 @@
-# Halo Event Connector v1.9
+# Halo Event Connector v1.10
 
 Author: toolbox@cloudpassage.com
 

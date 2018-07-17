@@ -15,11 +15,15 @@ class Cef(object):
     def cef_constants(self, event):
         """build cef constants"""
         severity = 9 if event["critical"] else 3
+        try:
+            event_type_id = self.configs["eventIdMap"][event["type"]]
+        except KeyError:
+            event_type_id = 999
         return "CEF:%s|%s|%s|%s|%s|%s|%s|" % (self.configs["cefVersion"],
                                               self.configs["cefVendor"],
                                               self.configs["cefProduct"],
                                               self.configs["cefProductVersion"],
-                                              self.configs["eventIdMap"][event["type"]],
+                                              event_type_id,
                                               event["name"],
                                               severity)
 

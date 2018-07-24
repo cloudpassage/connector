@@ -7,4 +7,4 @@ from lib.rsyslog import Rsyslog
 from lib.config_helper import ConfigHelper
 
 __author__ = "toolbox@cloudpassage.com"
-__version__ = "1.8"
+__version__ = "1.9"

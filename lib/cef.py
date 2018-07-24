@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Cef class"""
 from lib.options import Options
+from lib.config_helper import ConfigHelper
 import lib.loadyaml as loadyaml
 import datetime
 
@@ -15,10 +16,11 @@ class Cef(object):
     def cef_constants(self, event):
         """build cef constants"""
         severity = 9 if event["critical"] else 3
+        cef_product_version = ConfigHelper.get_product_version()
         return "CEF:%s|%s|%s|%s|%s|%s|%s|" % (self.configs["cefVersion"],
                                               self.configs["cefVendor"],
                                               self.configs["cefProduct"],
-                                              self.configs["cefProductVersion"],
+                                              cef_product_version,
                                               self.configs["eventIdMap"][event["type"]],
                                               event["name"],
                                               severity)

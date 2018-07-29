@@ -3,3 +3,5 @@ lib/*.pyc
 configs/configdir/*
 data/*
 .cache
+.env
+halo.auth

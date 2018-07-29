@@ -1,6 +1,8 @@
 # Halo Event Connector v1.10
 
-Author: toolbox@cloudpassage.com
+[![Build Status](https://travis-ci.org/cloudpassage/connector.svg?branch=master)](https://travis-ci.org/cloudpassage/connector)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0ba702a4cf12a6025067/maintainability)](https://codeclimate.com/github/cloudpassage/connector/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/0ba702a4cf12a6025067/test_coverage)](https://codeclimate.com/github/cloudpassage/connector/test_coverage)
 
 ### Required package:
 Cloudpassage SDK:

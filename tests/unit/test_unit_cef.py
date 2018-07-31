@@ -1,14 +1,20 @@
-# import cloudpassage
 import pprint
-import sys
+import imp
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../', 'lib'))
-from cef import Cef
+import sys
+
+module_name = 'lib'
+
+here_dir = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.join(here_dir, '../../')
+sys.path.append(module_path)
+fp, pathname, description = imp.find_module(module_name)
+lib = imp.load_module(module_name, fp, pathname, description)
 
 
 class TestUnitCef:
     def create_cef_object(self):
-        cef = Cef({'cefsyslog': None})
+        cef = lib.Cef({'cefsyslog': None})
         return cef
 
     def event_stub(self):
@@ -40,8 +46,18 @@ class TestUnitCef:
     def test_cef_constants(self):
         cef = self.create_cef_object()
         cef_constants = cef.cef_constants(self.event_stub()[0])
-        expected = "CEF:0|CloudPassage|CPHalo|1.0|" \
-                   "130|File Integrity change detected|9|"
+        product_version = lib.ConfigHelper.get_product_version()
+        expected = "CEF:0|CloudPassage|CPHalo|%s|130|File Integrity change detected|9|" % product_version  # NOQA
+        assert expected == cef_constants
+
+    def test_cef_constantants_no_event_type_id_match(self):
+        cef = self.create_cef_object()
+        sample_event = self.event_stub()[0]
+        sample_event["type"] = "new_event_type"
+        sample_event["name"] = "New Event Type"
+        cef_constants = cef.cef_constants(sample_event)
+        product_version = lib.ConfigHelper.get_product_version()
+        expected = "CEF:0|CloudPassage|CPHalo|%s|999|New Event Type|9|" % product_version  # NOQA
         assert expected == cef_constants
 
     def test_cef_outliers(self):
@@ -84,8 +100,9 @@ class TestUnitCef:
 
     def test_format_cef(self):
         cef = self.create_cef_object()
-        cef_format = cef.format_cef(self.event_stub())[0]
-        expected = ("CEF:0|CloudPassage|CPHalo|1.0|130|"
+        cef_format = cef.format_events(self.event_stub())[0]
+        product_version = lib.ConfigHelper.get_product_version()
+        expected = ("CEF:0|CloudPassage|CPHalo|%s|130|"
                     "File Integrity change detected|9|"
                     "rt=Aug 22 2016 16:24:30 UTC cs4Label=server_group_name "
                     "destinationTranslatedAddress=54.183.177.195 dst=10.2.20.76"  # NOQA
@@ -102,5 +119,5 @@ class TestUnitCef:
                     "target/opt/cloudpassage/*/* on Linux serverJlee-Chef-Node1"  # NOQA
                     " (54.183.177.195) (source: Scan) cs4=old_smoke "
                     "deviceDirection=0 cs1=FIM halo cs3Label=server_id "
-                    "cs3=5b1d73b63e3711e68ead7f4b70b6c2b8 cs2=Linux ")
+                    "cs3=5b1d73b63e3711e68ead7f4b70b6c2b8 cs2=Linux " % product_version)  # NOQA
         assert expected == cef_format

@@ -1,23 +1,20 @@
 """Json and key-value formatter"""
 import json
+from formatter import Formatter
 
 
-def format_json(batched):
-    """Format raw data into json format"""
-    aggregated_events = []
-    for event in batched:
-        aggregated_events.append(json.dumps(event))
-        aggregated_events.append("\n")
-    return aggregated_events
+class FormatJson(Formatter):
+    def format_event(self, event):
+        """Format raw data into json format"""
+        formatted_event = "%s\n" % json.dumps(event)
+        return formatted_event
 
 
-def format_kv(batched):
-    """Format raw data into key-value format"""
-    aggregated_kv = []
-    for event in batched:
-        kv_str = ""
+class FormatKv(Formatter):
+    def format_event(self, event):
+        """Format raw data into key-value format"""
+        formatted_event = ""
         for key, value in event.items():
-            kv_str += "%s=\"%s\" " % (key, value)
-        kv_str += "\n"
-        aggregated_kv.append(kv_str)
-    return aggregated_kv
+            formatted_event += "%s=\"%s\" " % (key, value)
+        formatted_event += "\n"
+        return formatted_event

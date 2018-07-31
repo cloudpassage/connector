@@ -3,14 +3,15 @@
 """Utility class"""
 import os
 import signal
-from lib.options import Options
-from lib.leef import Leef
-from lib.cef import Cef
-from lib.sumologic import Sumologic
-from lib.rsyslog import Rsyslog
-import lib.validate as validate
-import lib.jsonkv as jsonkv
-import lib.settings as settings
+from options import Options
+from leef import Leef
+from cef import Cef
+from sumologic import Sumologic
+from rsyslog import Rsyslog
+import validate as validate
+from jsonkv import FormatKv
+from jsonkv import FormatJson
+import settings as settings
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -24,6 +25,8 @@ class Utility(object):
         self.leef = Leef(options)
         self.cef = Cef(options)
         self.sumo = Sumologic()
+        self.json_formatter = FormatJson(options)
+        self.kv_formatter = FormatKv(options)
 
     def rename(self, original, new):
         """rename"""
@@ -49,33 +52,33 @@ class Utility(object):
         """output events"""
         if self.options["ceffile"] is not None:
             self.write_output(self.options["ceffile"],
-                              self.cef.format_cef(batched))
+                              self.cef.format_events(batched))
         if self.options["jsonfile"] is not None:
             self.write_output(self.options["jsonfile"],
-                              jsonkv.format_json(batched))
+                              self.json_formatter.format_events(batched))
         elif self.options["kvfile"] is not None:
             self.write_output(self.options["kvfile"],
-                              jsonkv.format_kv(batched))
+                              self.kv_formatter.format_events(batched))
         elif self.options['leeffile'] is not None:
             self.write_output(self.options["leeffile"],
-                              self.leef.format_leef(batched))
+                              self.leef.format_events(batched))
         elif self.options["cef"]:
-            for formatted_event in self.cef.format_cef(batched):
+            for formatted_event in self.cef.format_events(batched):
                 print formatted_event
         elif self.options["kv"]:
-            for formatted_event in jsonkv.format_kv(batched):
+            for formatted_event in self.kv_formatter.format_events(batched):
                 print formatted_event
         elif self.options["cefsyslog"]:
             self.rsyslog.process_openlog(self.options["facility"])
-            self.rsyslog.process_syslog(self.cef.format_cef(batched))
+            self.rsyslog.process_syslog(self.cef.format_events(batched))
             self.rsyslog.closelog()
         elif self.options["leefsyslog"]:
             self.rsyslog.process_openlog(self.options["facility"])
-            self.rsyslog.process_syslog(self.leef.format_leef(batched))
+            self.rsyslog.process_syslog(self.leef.format_events(batched))
             self.rsyslog.closelog()
         elif self.options["kvsyslog"]:
             self.rsyslog.process_openlog(self.options["facility"])
-            self.rsyslog.process_syslog(jsonkv.format_kv(batched))
+            self.rsyslog.process_syslog(self.kv_formatter.format_events(batched))  # NOQA
             self.rsyslog.closelog()
         elif self.options["sumologic"]:
             for event in batched:

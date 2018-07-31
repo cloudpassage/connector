@@ -7,9 +7,9 @@ import os
 import sys
 import dateutil.parser
 import cloudpassage
-from lib.utility import Utility
-import lib.settings as settings
-from lib.config_helper import ConfigHelper
+from utility import Utility
+import settings as settings
+from config_helper import ConfigHelper
 
 
 def _pickle_method(message):

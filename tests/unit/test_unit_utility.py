@@ -1,11 +1,14 @@
 import sys
 import os
-import pytest
+import imp
 import re
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../', 'lib'))
-from utility import Utility
-import settings
+module_name = 'lib'
 
+here_dir = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.join(here_dir, '../../')
+sys.path.append(module_path)
+fp, pathname, description = imp.find_module(module_name)
+lib = imp.load_module(module_name, fp, pathname, description)
 auth_file_name = "keys.auth"
 tests_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 auth_file = os.path.join(tests_dir, "configs/", auth_file_name)
@@ -14,10 +17,7 @@ configdir = os.path.join(tests_dir, "tests/data/")
 
 class TestUnitUtility:
     def create_utility_object(self, options):
-        return Utility(options)
-
-    # def create_settings_object(self):
-    #    return Settings()
+        return lib.Utility(options)
 
     def test_parse_auth(self):
         options = {
@@ -33,9 +33,8 @@ class TestUnitUtility:
             'batchsize': None
         }
         utility = self.create_utility_object(options)
-        # setting = self.create_settings_object()
         resp = utility.parse_pagination_limit()
-        assert resp == settings.pagination_limit()
+        assert resp == lib.settings.pagination_limit()
 
     def test_parse_pagination_limit_batchsize_commandline(self):
         options = {
@@ -70,9 +69,8 @@ class TestUnitUtility:
             'threads': None
         }
         utility = self.create_utility_object(options)
-        # setting = self.create_settings_object()
         resp = utility.parse_threads()
-        assert resp == settings.threads()
+        assert resp == lib.settings.threads()
 
     def test_parse_threads_str(self):
         options = {

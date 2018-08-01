@@ -6,6 +6,22 @@ from options import Options
 
 
 class Formatter(object):
+    """Instantiate Formatter class.
+
+    Args:
+        options(lib.Options): Optional.
+
+    Attributes:
+        options(lib.Options): Instance variable. Set from init argument.
+        product_version(str): Instance variable. Version of connector tool.
+        event_reference(None): Class variable. This is overridden as-needed by
+            sub-classes.
+        datetime_format(None): Class variable. This is overridden as-needed by
+            sub-classes.
+        event_reference_file(None): Class variable. This is overridden
+            as-needed by sub-classes.
+    """
+
     event_reference_file = None
     datetime_format = None
 
@@ -48,10 +64,11 @@ class Formatter(object):
 
     @classmethod
     def halo_timestamp_to_datetime(cls, halo_timestamp):
+        """Return datetime object for Halo event timestamp."""
         return datetime.strptime(halo_timestamp, '%Y-%m-%dT%H:%M:%S.%fZ')
 
     def format_events(self, events):
-        """This is an iterating wrapper for format_event."""
+        """Iterate over format_event."""
         formatted_events = []
         for event in events:
             formatted_events.append(self.format_event(event))

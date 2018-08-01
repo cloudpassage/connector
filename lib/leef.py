@@ -6,12 +6,31 @@ import os
 
 
 class Leef(Formatter):
-    """Leef class"""
+    """Manage formatting of events for LEEF.
+
+    Args:
+        options(lib.Options()): Optional.
+
+    Attributes:
+        options(lib.Options): Instance variable. Set from init argument.
+        product_version(str): Instance variable. Version of connector tool.
+        event_reference(dict): Instance variable. Contents of leef.yml.
+        event_reference_file(str): Class variable. Path to leef.yml (see
+            event_reference, above)
+
+    """
     event_reference_file = os.path.join(os.path.dirname(__file__),
                                         '../configs/leef.yml')
 
     def constants(self, event):
-        """build leef constants"""
+        """Return LEEF-formatted prefix for event.
+
+        Args:
+            event(dict): Halo event.
+
+        Returns:
+            str: LEEF-formattted prefix for event.
+        """
         evt = ("LEEF:%s|%s|%s|%s|%s|" %
                (self.event_reference['leefFormatVersion'],
                 self.event_reference['leefVendor'],
@@ -21,22 +40,29 @@ class Leef(Formatter):
         return evt
 
     def event_category(self, event):
-        """determine event category"""
+        """Return category for event.
+
+        Args:
+            event(dict): Halo event.
+
+        Returns:
+            str: LEEF category for event type.
+        """
         for key, value in self.event_reference['leefCategoriesByName'].items():
             if event['type'] in value:
                 return key
 
     def build_leef_outliers(self, mapping, event):
-        """build leef outliers"""
+        """Set fields in LEEF event mapping."""
         category = self.event_category(event)
         mapping['cat'] = category if category else "unknown"
         mapping['leefDateFormat'] = self.event_reference['leefDateFormat']
         mapping['sev'] = 9 if event['critical'] else 3
-        mapping['isLoginEvent'] = True if event['type'] in self.event_reference['leefLoginEventNames'] else False
-        mapping['isLogoutEvent'] = True if event['type'] in self.event_reference['leefLogoutEventNames'] else False
+        mapping['isLoginEvent'] = True if event['type'] in self.event_reference['leefLoginEventNames'] else False  # NOQA
+        mapping['isLogoutEvent'] = True if event['type'] in self.event_reference['leefLogoutEventNames'] else False  # NOQA
 
     def build_leef_mapping(self, event):
-        """build leef mapping"""
+        """Set fields in LEEF event mapping."""
         mapping = {}
         self.build_leef_outliers(mapping, event)
         for key, value in self.event_reference['leefFieldMapping'].items():

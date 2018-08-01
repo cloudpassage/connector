@@ -4,32 +4,62 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/0ba702a4cf12a6025067/maintainability)](https://codeclimate.com/github/cloudpassage/connector/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0ba702a4cf12a6025067/test_coverage)](https://codeclimate.com/github/cloudpassage/connector/test_coverage)
 
-### Required package:
-Cloudpassage SDK:
+### Requirements
 
-Install from pip with `pip install cloudpassage`. If you want to make modifications to the SDK you can install it in editable mode by downloading the source from this github repo, navigating to the top directory within the archive and running pip install -e . (note the . at the end). Or you can visit https://github.com/cloudpassage/cloudpassage-halo-python-sdk to clone it directly from our github.
+This tool requires the following Python packages:
+* cloudpassage
+* python-dateutil
+* pytz
 
-Note: (If you run into SSL issues. Try the following command)
-`pip install pyopenssl`
+Install the requirements the easy way with `pip install -r requirements.txt`
 
 ### Intro - Quick Start
-In this repo we have included the pdf documentation for using these scripts to pull Halo event alerts into either Sumo Logic or Splunk - however, you will just as easily be able to integrate Halo events into other popular SIEM tools, such as ArcSight, or with your Syslog infrastructure.
 
-In addition, there are several ways you can run this script to stream event data to your desired target.
+While this tool can be run by a variety of different scheduling mechanisms, the
+most common pattern is to use cron.
 
-For example, let's say, you wanted to setup this script to be run from cron, emit Halo events as key-value name pairs and append them to a file on the local filesystem. And you wanted to pull only those events that were logged since Nov 10, 2012 onwards <b> (The furthrest date Halo can retrieve is 90 days from today) </b>. And instead of using the script defaults where the files are expected to be in the program directory, let's say you wanted to use a different working directory /opt/cloudpassage, for example.
+In this example:
+* We will use cron to run the event connector.
+* The event connector will append Halo events to a file in key-value format.
+(in this example, `/var/log/halo-kv.log`)
+* In this scenario, we need to retrieve events starting on July 1st, 2017 (Halo
+   only retains events for 90 days, so this date is just used as an example).
 
-For that, you would do something like this:
+First, we check out this repository in `/opt/cloudpassage/`:
 
-Run crontab -e and add a line with the desired schedule, such as the following to run, say every 5 minutes
+* `mkdir -p /opt/cloudpassage`
+* `cd /opt/cloudpassage`
+* `git clone https://github.com/cloudpassage/connector`
+
+Next, configure Halo authentication information for the connector:
+
+* In your CloudPassage portal account, generate an auditor (read-only) API key.
+* Place the API key and secret, pipe-separated, in a file at
+`/opt/cloudpassage/connector/config/halo.auth`.  The file will contain one
+line, which looks like this: `haloapikey|haloapisecret`, replacing `haloapikey`
+with the key ID for your Halo API key, and replacing `haloapisecret` with your
+API key's secret.
+
+Next, configure cron to run the Halo connector every 5 minutes:
+
+* Run `crontab -e`
+* Add a line with the desired schedule:
 
 ```
-*/5 * * * * /opt/cloudpassage/bin/haloEvents.py --starting=2012-11-10 --auth=/opt/cloudpassage/config/myHaloKeys.auth --configdir=/opt/cloudpassage/config --kvfile=/opt/cloudpassage/logs/eventsInKVFormat >/dev/null 2>&1
+*/5 * * * * /opt/cloudpassage/connector/halo_events.py --starting=2017-07-01 --auth=/opt/cloudpassage/connector/config/halo.auth --configdir=/opt/cloudpassage/config --kvfile=/var/log/halo-kv.log >/dev/null 2>&1
 ```
 
-Save your changes before you exit.
+Save and exit crontab.
 
-If you are extracting events from more than one (supports up to 5) Halo accounts, you can specify those in your myHaloKeys.auth file like this:
+Monitor the `/var/log/halo-kv.log` file to see events from your Halo account.
+
+
+### Implementation Notes
+
+__Multiple accounts:__
+
+If you are extracting events from more than one (supports up to 5) Halo
+accounts, you can specify those in your halo.auth file like this:
 
 ```
 key_id_1|secret_1
@@ -39,8 +69,9 @@ key_id_2|secret_2
 key_id_5|secret_5
 ```
 
+__CLI Options:__
 ```
-usage: haloEvents.py [-h] [--starting STARTING] --auth AUTH
+usage: halo_events.py [-h] [--starting STARTING] --auth AUTH
                      [--threads THREADS] [--batchsize BATCHSIZE]
                      [--configdir CONFIGDIR] [--jsonfile JSONFILE]
                      [--ceffile CEFFILE] [--leeffile LEEFFILE]
@@ -84,64 +115,50 @@ optional arguments:
   --kvsyslog            Write events as key/value pairs to local syslog daemon
   --sumologic           Send events (JSON) format to Sumologic. Must specify sumologic_https_url in configs/portal.yml
 ```
+
 ### Halo Event Connector on Linux
 
-1. Install Python 2.7.11 or newer (https://www.python.org/downloads)
+* Install Python 2.7.11 or newer (https://www.python.org/downloads)
 
-2. Once Python is installed, install the necessary Python modules
-
-```
-pip install python-dateutil
-pip install pytz
-```
-
-3. Download latest CloudPassage Halo API SDK (https://github.com/cloudpassage/cloudpassage-halo-python-sdk/tree/develop).
-
-4. Install the SDK via cli by navigating to the downloaded expanded folder location and running
+* Once Python is installed, install the necessary Python modules:
 
 ```
-pip install .
+pip install -r requirements.txt
 ```
 
-5. Download the Halo Event Connector (https://github.com/mong2/haloEvent_connector)
 
-6. Create the haloEvents.auth file
+* Download the Halo Event Connector (https://github.com/cloudpassage/connector)
 
-7. Run the connector (currently must specify a starting cli parameter)
+6. Create the `halo.auth` file
+
+7. Run the connector (must specify a starting cli parameter)
 
 ```
-python halo_events.py --auth=haloEvents.py --starting=YYYY-MM-DD
+python halo_events.py --auth=halo.auth --starting=YYYY-MM-DD
 ```
 
 ### Halo Event Connector on Windows
 
-1. Install Python 2.7.11 or newer (https://www.python.org/downloads/windows/)
+* Install Python 2.7.11 or newer (https://www.python.org/downloads/windows/)
 
-2. Add python installation folder to system PATH environmental variable or create PYTHONPATH environmental variable and set installation folder location as follows (C:\Python27\lib;C:\Python27)
+* Add python installation folder to system PATH environmental variable or
+create PYTHONPATH environment variable and set installation folder location as
+follows (C:\Python27\lib;C:\Python27)
 
-3. Once Python is installed, install the necessary Python modules
-
-```
-python -m pip install python-dateutil
-python -m pip install pytz
-```
-
-4. Download latest CloudPassage Halo API SDK (https://github.com/cloudpassage/cloudpassage-halo-python-sdk/tree/develop).
-
-5. Install the SDK via cli by navigating to the downloaded expanded folder location and running
+* Once Python is installed, install the necessary Python modules
 
 ```
-python -m pip install .
+python -m pip install -r requirements.txt
 ```
 
-6. Download the Halo Event Connector (https://github.com/mong2/haloEvent_connector)
+* Download the Halo Event Connector (https://github.com/cloudpassage/connector)
 
-7. Create the haloEvents.auth file
+* Create the halo.auth file
 
-8. Run the connector (currently must specify a starting cli parameter)
+* Run the connector (currently must specify a starting cli parameter)
 
 ```
-python halo_events.py --auth=haloEvents.py --starting=YYYY-MM-DD
+python halo_events.py --auth=halo.auth --starting=YYYY-MM-DD
 ```
 
 #### Remote Syslog Windows
@@ -173,32 +190,6 @@ Testing:
 All testing happens in the first stage of the container build.
 
 
-#### License
-
-Copyright (c) 2017, CloudPassage, Inc.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the CloudPassage, Inc. nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL CLOUDPASSAGE, INC. BE LIABLE FOR ANY DIRECT,
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED ANDON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <!---
 #CPTAGS:community-supported integration archive
 #TBICON:images/python_icon.png

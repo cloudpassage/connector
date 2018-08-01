@@ -15,14 +15,16 @@ def validate_time(date):
     except:
         raise ValueError(date + " is not in iso8601 time format")
 
+
 def validate_time_range(date):
     """validate time range"""
     date_parsed = dateutil.parser.parse(date)
     if date_parsed.tzinfo is None:
         date_parsed = pytz.utc.localize(date_parsed)
-    time_range = (datetime.datetime.utcnow().replace(tzinfo=pytz.utc) - datetime.timedelta(days=settings.historical_limit()))
+    time_range = (datetime.datetime.utcnow().replace(tzinfo=pytz.utc) - datetime.timedelta(days=settings.historical_limit()))  # NOQA
     if date_parsed < time_range:
         raise ValueError(date + " is out of range")
+
 
 def batchsize(page):
     """validate batchsize"""
@@ -33,6 +35,7 @@ def batchsize(page):
     if int(page) > settings.pagination_limit():
         raise ValueError("you have exceeded the batchsize limitation")
 
+
 def thread(thread_count):
     """validate threads"""
     try:
@@ -42,10 +45,12 @@ def thread(thread_count):
     if int(thread_count) > settings.threads():
         raise ValueError("you have exceeded the thread limitation")
 
+
 def starting(date):
     """validate starting"""
     validate_time(date)
     validate_time_range(date)
+
 
 def operating_system():
     """determine operating_system"""

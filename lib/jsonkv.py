@@ -5,14 +5,14 @@ from formatter import Formatter
 
 class FormatJson(Formatter):
     def format_event(self, event):
-        """Format raw data into json format"""
+        """Return Halo event, formatted as a json string."""
         formatted_event = "%s\n" % json.dumps(event)
         return formatted_event
 
 
 class FormatKv(Formatter):
     def format_event(self, event):
-        """Format raw data into key-value format"""
+        """Return Halo event, formatted as a key-value string"""
         formatted_event = ""
         for key, value in event.items():
             formatted_event += "%s=\"%s\" " % (key, value)

@@ -14,7 +14,7 @@ class Formatter(object):
     Attributes:
         options(lib.Options): Instance variable. Set from init argument.
         product_version(str): Instance variable. Version of connector tool.
-        event_reference(None): Class variable. This is overridden as-needed by
+        event_reference(None): Instance variable. This is overridden as-needed by
             sub-classes.
         datetime_format(None): Class variable. This is overridden as-needed by
             sub-classes.

@@ -1,13 +1,20 @@
-import cloudpassage
-import sys
+import imp
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../', 'lib'))
-from leef import Leef
+import pprint
+import sys
+
+module_name = 'lib'
+
+here_dir = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.join(here_dir, '../../')
+sys.path.append(module_path)
+fp, pathname, description = imp.find_module(module_name)
+lib = imp.load_module(module_name, fp, pathname, description)
 
 
 class TestUnitLeef:
     def create_leef_object(self):
-        leef = Leef({"leefsyslog": None})
+        leef = lib.Leef({"leefsyslog": None})
         return leef
 
     def event_stub(self):
@@ -16,8 +23,8 @@ class TestUnitLeef:
                 "id": "e750d982688411e6b7b32f750f990d28",
                 "type": "fim_target_integrity_changed",
                 "name": "File Integrity change detected",
-                "message": "A change was detected in file integrity target" \
-                           "/opt/cloudpassage/*/* on Linux server" \
+                "message": "A change was detected in file integrity target"
+                           "/opt/cloudpassage/*/* on Linux server"
                            "Jlee-Chef-Node1 (54.183.177.195) (source: Scan)",
                 "server_id": "5b1d73b63e3711e68ead7f4b70b6c2b8",
                 "created_at": "2016-08-22T16:24:30.726Z",
@@ -54,6 +61,12 @@ class TestUnitLeef:
             'isLoginEvent': False,
             'cat': 'server_events'
         }
+        expected = {'cat': 'server_events',
+                    'isLoginEvent': False,
+                    'isLogoutEvent': False,
+                    'leefDateFormat': u"yyyy-MM-dd'T'HH:mm:ss.SSS",
+                    'sev': 9}
+        pprint.pprint(mapping)
         assert expected == mapping
 
     def test_build_leef_mapping(self):
@@ -64,8 +77,8 @@ class TestUnitLeef:
             'finding_id': 'e748d9c6688411e6b7b32f750f990d28',
             'srcName': 'ip-10-2-20-76',
             'server_label': 'Jlee-Chef-Node1',
-            "message": "A change was detected in file integrity target" \
-                       "/opt/cloudpassage/*/* on Linux server" \
+            "message": "A change was detected in file integrity target"
+                       "/opt/cloudpassage/*/* on Linux server"
                        "Jlee-Chef-Node1 (54.183.177.195) (source: Scan)",
             'id': 'e750d982688411e6b7b32f750f990d28',
             'server_id': '5b1d73b63e3711e68ead7f4b70b6c2b8',
@@ -87,9 +100,9 @@ class TestUnitLeef:
         }
         assert expected == leef_mapping
 
-    def test_format_leef(self):
+    def test_format_events(self):
         leef = self.create_leef_object()
-        leef_format = leef.format_leef(self.event_stub())[0]
+        leef_format = leef.format_events(self.event_stub())[0]
         expected = "LEEF:1.0|CloudPassage|CPHalo|1.0|"\
                    "File Integrity change detected|"\
                    "sev=9     "\

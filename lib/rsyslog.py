@@ -12,9 +12,9 @@ except ImportError:
 class Rsyslog(object):
     """ Initializing Rsyslog class:
 
-        Args:
-        operating_system: to check which operating system \
-        the script is running on
+    Attributes:
+        operating_system: to check which operating system
+            the script is running on
         rsys: information from rsyslog.yml
         portal: information from portal.yml
         host: rsyslog host

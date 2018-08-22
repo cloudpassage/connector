@@ -16,7 +16,7 @@ leefLoginEventNames : [
     ghostport_failure
 ]
 leefLogoutEventNames : [ halo_logout ]
-leefDateFormat : yyyy-MM-dd’T’HH:mm:ss.SSS
+leefDateFormat : yyyy-MM-dd'T'HH:mm:ss.SSS
 leefOmitFields : [
     name
     critical
@@ -176,4 +176,11 @@ leefCategoriesByName:
         local_account_update_request,
         local_account_update_ssh_keys_request,
         sam_scan_requested
+    ]
+    cloud_service_provider: [
+        csp_account_provisioned,
+        csp_account_deactivated,
+        csp_account_deleted,
+        cloud_asset_configuration_rule_failed,
+        "ServerEvents::CloudAssetConfigurationRuleFailed"
     ]

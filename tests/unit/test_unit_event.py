@@ -1,10 +1,16 @@
-import cloudpassage
+import imp
 import sys
 import os
 import yaml
 import datetime
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../', 'lib'))
-from event import Event
+module_name = 'lib'
+
+here_dir = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.join(here_dir, '../../')
+sys.path.append(module_path)
+fp, pathname, description = imp.find_module(module_name)
+lib = imp.load_module(module_name, fp, pathname, description)
+
 
 config_file_name = "portal.yml"
 tests_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
@@ -22,13 +28,14 @@ class TestUnitEvent:
             '--auth': config_file,
             '--starting': date_today
         }
-
-        event = Event(key_id, secret_key, options)
+        print options
+        event = lib.Event(key_id, secret_key, options)
         return event
 
     def test_event_get_is_not_empty(self):
         event = self.create_event_obj()
         resp = event.get(1, date_today, 1)
+        print resp
         assert resp['events']
 
     def test_latest_event_is_not_empty(self):

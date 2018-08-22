@@ -2,10 +2,6 @@ import cloudpassage
 
 
 class TestUnitHaloSession:
-    def create_halo_session_object(self):
-        session = cloudpassage.HaloSession(key_id, secret_key)
-        return session
-
     def test_integration_string(self):
         int_string = "integration/v1.0"
         ua_string = "sdk/v1.1"

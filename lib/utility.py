@@ -3,17 +3,19 @@
 """Utility class"""
 import os
 import signal
-from lib.options import Options
-from lib.leef import Leef
-from lib.cef import Cef
-from lib.sumologic import Sumologic
-from lib.rsyslog import Rsyslog
-import lib.validate as validate
-import lib.jsonkv as jsonkv
-import lib.settings as settings
+from options import Options
+from leef import Leef
+from cef import Cef
+from sumologic import Sumologic
+from rsyslog import Rsyslog
+import validate as validate
+from jsonkv import FormatKv
+from jsonkv import FormatJson
+import settings as settings
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
 
 class Utility(object):
     """Utility class"""
@@ -23,6 +25,8 @@ class Utility(object):
         self.leef = Leef(options)
         self.cef = Cef(options)
         self.sumo = Sumologic()
+        self.json_formatter = FormatJson(options)
+        self.kv_formatter = FormatKv(options)
 
     def rename(self, original, new):
         """rename"""
@@ -47,30 +51,34 @@ class Utility(object):
     def output_events(self, batched):
         """output events"""
         if self.options["ceffile"] is not None:
-            self.write_output(self.options["ceffile"], self.cef.format_cef(batched))
+            self.write_output(self.options["ceffile"],
+                              self.cef.format_events(batched))
         if self.options["jsonfile"] is not None:
-            self.write_output(self.options["jsonfile"], jsonkv.format_json(batched))
+            self.write_output(self.options["jsonfile"],
+                              self.json_formatter.format_events(batched))
         elif self.options["kvfile"] is not None:
-            self.write_output(self.options["kvfile"], jsonkv.format_kv(batched))
+            self.write_output(self.options["kvfile"],
+                              self.kv_formatter.format_events(batched))
         elif self.options['leeffile'] is not None:
-            self.write_output(self.options["leeffile"], self.leef.format_leef(batched))
+            self.write_output(self.options["leeffile"],
+                              self.leef.format_events(batched))
         elif self.options["cef"]:
-            for formatted_event in self.cef.format_cef(batched):
+            for formatted_event in self.cef.format_events(batched):
                 print formatted_event
         elif self.options["kv"]:
-            for formatted_event in jsonkv.format_kv(batched):
+            for formatted_event in self.kv_formatter.format_events(batched):
                 print formatted_event
         elif self.options["cefsyslog"]:
             self.rsyslog.process_openlog(self.options["facility"])
-            self.rsyslog.process_syslog(self.cef.format_cef(batched))
+            self.rsyslog.process_syslog(self.cef.format_events(batched))
             self.rsyslog.closelog()
         elif self.options["leefsyslog"]:
             self.rsyslog.process_openlog(self.options["facility"])
-            self.rsyslog.process_syslog(self.leef.format_leef(batched))
+            self.rsyslog.process_syslog(self.leef.format_events(batched))
             self.rsyslog.closelog()
         elif self.options["kvsyslog"]:
             self.rsyslog.process_openlog(self.options["facility"])
-            self.rsyslog.process_syslog(jsonkv.format_kv(batched))
+            self.rsyslog.process_syslog(self.kv_formatter.format_events(batched))  # NOQA
             self.rsyslog.closelog()
         elif self.options["sumologic"]:
             for event in batched:
@@ -108,7 +116,7 @@ class Utility(object):
             validate.starting(self.options["starting"])
             return self.options["starting"]
         elif self.options["starting"] is None and self.options["configdir"]:
-            return self.parse_configdir()
+            return self.parse_configdir_file()[0]["end_date"]
         else:
             try:
                 return self.parse_configdir_file()[0]["end_date"]
@@ -118,7 +126,8 @@ class Utility(object):
     def parse_configdir(self):
         """determine config directory"""
         if self.options["configdir"] is None:
-            return os.path.join(os.path.dirname(__file__), os.pardir, 'configs')
+            return os.path.join(os.path.dirname(__file__),
+                                os.pardir, 'configs')
         return self.options["configdir"]
 
     def parse_configdir_file(self):
@@ -133,7 +142,7 @@ class Utility(object):
                         validate.starting(end_date)
                         key_date.append({"key_id": key, "end_date": end_date})
         else:
-            raise ValueError("Please use --starting to specify a starting date")
+            raise ValueError("Please use --starting to specify starting date")
         return key_date
 
     def updated_hash(self):
